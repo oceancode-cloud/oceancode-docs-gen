@@ -1,0 +1,72 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8"/>
+  <title>{{title}}</title>
+</head>
+<body>
+  <div id="content"></div>
+  <script src="../{{prePaths}}libs/vue/vue.js"></script>
+  <script src="../{{prePaths}}libs/naive-ui/naive-ui.js"></script>
+  <script src="../{{prePaths}}libs/ocean-ui/index.umd.cjs"></script>
+  <link href="../{{prePaths}}libs/themes/naive.css" rel="stylesheet">
+  <link href="../{{prePaths}}libs/ocean-ui/style.css" rel="stylesheet">
+
+  <div id="app">
+    <o-app>
+      {{#each list}}
+      {{#if (isHeading type)}}
+      <h{{depth}}>{{text}}</h{{depth}}>
+      <div>{{toRawString contents}}</div>
+      {{/if}}
+      {{#if (hasTable this)}}
+      <table>
+        <thead>
+          <tr>
+            {{#each table.columns}}
+            <th>{{text}}</th>
+            {{/each}}
+          </tr>
+        </thead>
+        <tbody>
+          {{#each table.rows}}
+          <tr>
+            {{#each this}}
+            <td v-html="'{{this}}'"></td>
+            {{/each}}
+          </tr>
+          {{/each}}
+        </tbody>
+      </table>
+      {{/if}}
+      {{/each}}
+    </o-app>
+  </div>
+</body>
+</html>
+<script type="module">
+  const { createApp,ref } = Vue;
+  
+  const App = {
+    setup(){
+      {{#each javascripts.scripts}}
+      {{toRawString this}}
+      {{/each}}
+      return {
+        {{#each javascripts.setupReturns}}
+        {{toRawString this}}
+        {{/each}}
+      }
+    }
+  }
+  const app = createApp(App)
+  app.use(naive)
+  app.use(ocean)
+  app.mount('#app')
+
+</script>
+<style>
+  .n-menu-item-content-header{
+    opacity: 1 !important;
+  }
+</style>

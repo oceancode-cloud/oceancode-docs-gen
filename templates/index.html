@@ -1,0 +1,70 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8"/>
+  <title>{{title}}</title>
+</head>
+<body>
+  <div id="content"></div>
+  <script src="./{{prePaths}}libs/vue/vue.js"></script>
+    <script src="./{{prePaths}}libs/naive-ui/naive-ui.js"></script>
+    <script src="./{{prePaths}}libs/ocean-ui/index.umd.cjs"></script>
+  <div id="app">
+    <o-n-app>
+      <o-layout>
+        <o-simple-layout :has-header="false" background-color="#fff">
+          <template #menu>
+            <o-simple-menu default-expand-all :options="menuOptions"></o-simple-menu>
+          </template>
+          <o-iframe-view src="{{defaultMenu.url}}"></o-iframe-view>
+        </o-simple-layout>
+      </o-layout>
+    </o-n-app>
+  </div>
+</body>
+</html>
+<script type="module">
+  const { createApp } = Vue;
+  const App = {
+    setup(){
+      const menuOptions = [
+        {{#each menus}}
+        {{#if (isMenuGroup parentId)}}
+        {
+          label:'{{title}}',
+          type:'group',
+          id: '{{id}}',
+          children:[]
+        },
+        {{/if}}
+        {{#if (isDataItem parentId)}}
+        {
+          label:'{{title}}',
+          id: '{{id}}',
+          key: '{{id}}',
+          parentId:'{{parentId}}',
+          url: {
+            url: '{{url}}',
+            target:'_self'
+          },
+          value:{}
+        },
+        {{/if}}
+        {{/each}}
+      ]
+      return {
+        menuOptions: ocean.deepTree(menuOptions)
+      }
+    }
+  }
+  const app = createApp(App)
+  app.use(naive)
+  app.use(ocean)
+  app.mount('#app')
+
+</script>
+<style>
+  .n-menu-item-content-header{
+    opacity: 1 !important;
+  }
+</style>
